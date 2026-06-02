@@ -1,0 +1,25 @@
+{
+  "name": "idep-kafka-tests",
+  "version": "0.1.0",
+  "description": "IDEP Kafka Integration Test Framework",
+  "engines": {
+    "node": ">=22"
+  },
+"scripts": {
+  "test:smoke": "cucumber-js --require-module ts-node/register --require hooks.ts --require steps/**/*.ts --format progress-bar --format json:reports/cucumber-report.json --tags @smoke features/**/*.feature",
+  "test:regression": "cucumber-js --require-module ts-node/register --require hooks.ts --require steps/**/*.ts --format progress-bar --format json:reports/cucumber-report.json --tags @regression features/**/*.feature",
+  "test": "cucumber-js --require-module ts-node/register --require hooks.ts --require steps/**/*.ts --format progress-bar --format json:reports/cucumber-report.json features/**/*.feature",
+  "test:unit": "vitest run"
+},
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.2.0",
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "ts-node": "^10.9.2",
+    "vitest": "^3.2.4"
+  }
+}

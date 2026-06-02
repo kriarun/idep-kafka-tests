@@ -1,0 +1,58 @@
+import { Given, When, Then } from '@cucumber/cucumber';
+import { getConsumer, getProducer } from '../lib/kafka.client';
+import { waitForMessages, resolveDocumentClassIds, publishStubMessage } from '../lib/helpers';
+import { TestContext } from '../lib/types/test-context';
+import { config } from '../config';
+import assert from 'assert';
+
+let context: TestContext;
+
+Given('the Kafka consumer is ready', async () => {
+  const consumer = getConsumer();
+  assert.ok(consumer, 'Kafka consumer is not connected');
+});
+
+Given(
+  'the file {string} with shareId {string} is uploaded with classifications {string}',
+  async (fileName: string, shareId: string, classificationsString: string) => {
+    const expectedKeys = classificationsString.split(',').map(c => c.trim());
+    const expectedIds = resolveDocumentClassIds(expectedKeys);
+
+    context = {
+      shareId,
+      fileName,
+      expectedClassifications: expectedIds,
+      receivedMessages: []
+    };
+
+    for (const documentClass of expectedIds) {
+      await publishStubMessage(getProducer(), shareId, documentClass);
+    }
+  }
+);
+
+When('all classification messages are received', async () => {
+  context.receivedMessages = await waitForMessages(
+    context.shareId,
+    context.expectedClassifications.length
+  );
+});
+
+Then(
+  'the classifications should contain {string}',
+  async (classificationsString: string) => {
+    const expectedKeys = classificationsString.split(',').map(c => c.trim());
+    const expectedIds = resolveDocumentClassIds(expectedKeys);
+
+    const receivedIds = context.receivedMessages.map(
+      m => m.documentClass
+    );
+
+    expectedIds.forEach(expectedId => {
+      assert.ok(
+        receivedIds.includes(expectedId),
+        `Expected classification ${expectedId} not found. Received: ${receivedIds.join(', ')}`
+      );
+    });
+  }
+);
