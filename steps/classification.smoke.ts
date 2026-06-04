@@ -14,14 +14,13 @@ Given('the Kafka consumer is ready', async () => {
 });
 
 Given(
-  'the file {string} with shareId {string} is uploaded with classifications {string}',
-  async (fileName: string, shareId: string, classificationsString: string) => {
+  'the document with shareId {string} is uploaded with classifications {string}',
+  async (shareId: string, classificationsString: string) => {
     const expectedKeys = classificationsString.split(',').map(c => c.trim());
     const expectedIds = resolveDocumentClassIds(expectedKeys);
 
     context = {
       shareId,
-      fileName,
       expectedClassifications: expectedIds,
       receivedMessages: []
     };

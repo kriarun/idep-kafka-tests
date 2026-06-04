@@ -8,7 +8,7 @@ let producer: Producer;
 const messageBuffer: ClassificationMessage[] = [];
 
 function createKafkaInstance(): Kafka {
-  const isLocal = !config.kafka.apiKey;
+  const isLocal = !config.kafka.username;
 
   if (isLocal) {
     return new Kafka({
@@ -22,8 +22,8 @@ function createKafkaInstance(): Kafka {
     ssl: true,
     sasl: {
       mechanism: 'plain',
-      username: config.kafka.apiKey,
-      password: config.kafka.apiSecret
+      username: config.kafka.username,
+      password: config.kafka.password
     },
     logLevel: logLevel.ERROR
   });
@@ -57,7 +57,7 @@ export async function connectConsumer(): Promise<void> {
   consumer = kafka.consumer({ groupId: config.kafka.groupId });
   await consumer.connect();
   await consumer.subscribe({
-    topic: config.kafka.topicB,
+    topic: config.kafka.topic,
     fromBeginning: false
   });
 

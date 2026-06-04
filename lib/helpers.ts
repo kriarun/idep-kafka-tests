@@ -1,7 +1,7 @@
 import { Consumer,Producer  } from 'kafkajs';
 import { ClassificationMessage } from './types/classification-message';
-import { DocumentClass, DocumentClassKey } from './types/document-class';
 import { config } from '../config';
+import { resolveDocumentClassId } from './types/document-class';
 
 export async function waitForMessages(
   getBuffer: () => ClassificationMessage[],
@@ -16,7 +16,7 @@ export async function waitForMessages(
           `Timeout waiting for messages. Expected: ${expectedCount}, Received: ${getBuffer().filter(m => m.correlationId === shareId).length} for shareId: ${shareId}`
         )
       );
-    }, config.test.waitTimeoutMs);
+    }, config.test.maxWaitForMessageMs);
 
     const interval = setInterval(() => {
       const received = getBuffer().filter(
@@ -30,18 +30,13 @@ export async function waitForMessages(
     }, 500);
   });
 }
+
+
+
 export function resolveDocumentClassIds(
   classifications: string[]
 ): string[] {
-  return classifications.map(key => {
-    const id = DocumentClass[key as DocumentClassKey];
-    if (!id) {
-      throw new Error(
-        `Unknown document class: ${key}. Check document-class.ts for valid values.`
-      );
-    }
-    return id;
-  });
+  return classifications.map(key => resolveDocumentClassId(key));
 }
 
 export function groupByCorrelationId(
@@ -60,7 +55,7 @@ export async function publishStubMessage(
   documentClass: string
 ): Promise<void> {
   await producer.send({
-    topic: config.kafka.topicB,
+    topic: config.kafka.topic,
     messages: [
       {
         key: shareId,
