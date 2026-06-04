@@ -4,8 +4,7 @@ import { connectConsumer, connectProducer, disconnectAll, clearMessageBuffer } f
 setDefaultTimeout(30 * 1000);
 
 BeforeAll(async () => {
-  await connectProducer();
-  await connectConsumer();
+await connectConsumer(); console.log('Consumer ready — copy files to folder now. Waiting 5 minutes...'); await new Promise(resolve => setTimeout(resolve, 5 * 60 * 1000)); console.log('Starting tests...');
 });
 
 Before(async () => {

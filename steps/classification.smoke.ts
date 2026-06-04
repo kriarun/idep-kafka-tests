@@ -4,6 +4,7 @@ import { waitForMessages, resolveDocumentClassIds, publishStubMessage } from '..
 import { TestContext } from '../lib/types/test-context';
 import { config } from '../config';
 import assert from 'assert';
+import { getMessageBuffer } from '../lib/kafka.client';
 
 let context: TestContext;
 
@@ -33,6 +34,7 @@ Given(
 
 When('all classification messages are received', async () => {
   context.receivedMessages = await waitForMessages(
+    getMessageBuffer,
     context.shareId,
     context.expectedClassifications.length
   );

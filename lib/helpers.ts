@@ -4,25 +4,22 @@ import { DocumentClass, DocumentClassKey } from './types/document-class';
 import { config } from '../config';
 
 export async function waitForMessages(
+  getBuffer: () => ClassificationMessage[],
   shareId: string,
   expectedCount: number
 ): Promise<ClassificationMessage[]> {
-  const { getMessageBuffer } = await import('../lib/kafka.client');
-
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
-      const received = getMessageBuffer().filter(
-        m => m.correlationId === shareId
-      );
+      clearInterval(interval);
       reject(
         new Error(
-          `Timeout waiting for messages. Expected: ${expectedCount}, Received: ${received.length} for shareId: ${shareId}`
+          `Timeout waiting for messages. Expected: ${expectedCount}, Received: ${getBuffer().filter(m => m.correlationId === shareId).length} for shareId: ${shareId}`
         )
       );
     }, config.test.waitTimeoutMs);
 
     const interval = setInterval(() => {
-      const received = getMessageBuffer().filter(
+      const received = getBuffer().filter(
         m => m.correlationId === shareId
       );
       if (received.length >= expectedCount) {
@@ -33,7 +30,6 @@ export async function waitForMessages(
     }, 500);
   });
 }
-
 export function resolveDocumentClassIds(
   classifications: string[]
 ): string[] {
