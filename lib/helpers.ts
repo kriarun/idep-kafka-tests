@@ -1,13 +1,13 @@
 import { Consumer,Producer  } from 'kafkajs';
-import { ClassificationMessage } from './types/classification-message';
+import { DocumentClassificationEvent  } from './types/document-classification-event';
 import { config } from '../config';
 import { resolveDocumentClassId } from './types/document-class';
 
 export async function waitForMessages(
-  getBuffer: () => ClassificationMessage[],
+  getBuffer: () => DocumentClassificationEvent [],
   shareId: string,
   expectedCount: number
-): Promise<ClassificationMessage[]> {
+): Promise<DocumentClassificationEvent []> {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       clearInterval(interval);
@@ -40,13 +40,13 @@ export function resolveDocumentClassIds(
 }
 
 export function groupByCorrelationId(
-  messages: ClassificationMessage[]
-): Map<string, ClassificationMessage[]> {
+  messages: DocumentClassificationEvent []
+): Map<string, DocumentClassificationEvent []> {
   return messages.reduce((map, message) => {
     const existing = map.get(message.correlationId) ?? [];
     map.set(message.correlationId, [...existing, message]);
     return map;
-  }, new Map<string, ClassificationMessage[]>());
+  }, new Map<string, DocumentClassificationEvent []>());
 }
 
 export async function publishStubMessage(

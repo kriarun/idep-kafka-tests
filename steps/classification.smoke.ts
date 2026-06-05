@@ -1,12 +1,12 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { getConsumer, getProducer } from '../lib/kafka.client';
 import { waitForMessages, resolveDocumentClassIds, publishStubMessage } from '../lib/helpers';
-import { TestContext } from '../lib/types/test-context';
+import { DocumentClassificationScenarioState  } from '../lib/types/document-classification-scenario-state';
 import { config } from '../config';
 import assert from 'assert';
 import { getMessageBuffer } from '../lib/kafka.client';
 
-let context: TestContext;
+let context: DocumentClassificationScenarioState ;
 
 Given('the Kafka consumer is ready', async () => {
   const consumer = getConsumer();

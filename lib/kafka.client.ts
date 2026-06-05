@@ -1,11 +1,11 @@
 import { Kafka, Consumer, Producer, logLevel } from 'kafkajs';
 import { config } from '../config';
-import { ClassificationMessage } from './types/classification-message';
+import { DocumentClassificationEvent  } from './types/document-classification-event';
 
 let kafka: Kafka;
 let consumer: Consumer;
 let producer: Producer;
-const messageBuffer: ClassificationMessage[] = [];
+const messageBuffer: DocumentClassificationEvent [] = [];
 
 function createKafkaInstance(): Kafka {
   const isLocal = !config.kafka.username;
@@ -65,7 +65,7 @@ export async function connectConsumer(): Promise<void> {
   await consumer.run({
     eachMessage: async ({ message }) => {
       if (!message.value) return;
-      const parsed: ClassificationMessage = JSON.parse(
+      const parsed: DocumentClassificationEvent  = JSON.parse(
         message.value.toString()
       );
       messageBuffer.push(parsed);
@@ -73,7 +73,7 @@ export async function connectConsumer(): Promise<void> {
   });
 }
 
-export function getMessageBuffer(): ClassificationMessage[] {
+export function getMessageBuffer(): DocumentClassificationEvent [] {
   return messageBuffer;
 }
 

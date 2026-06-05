@@ -1,4 +1,4 @@
-export interface ClassificationMessage {
+export interface DocumentClassificationEvent  {
   eventType: string;
   namespace: string;
   correlationId: string;
