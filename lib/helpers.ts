@@ -1,7 +1,7 @@
 import { Consumer,Producer  } from 'kafkajs';
 import { DocumentClassificationEvent  } from './types/document-classification-event';
 import { config } from '../config';
-import { resolveDocumentClassId } from './types/document-class';
+import { resolveDocumentClassId } from './types/document-classification-mapping';
 
 export async function waitForMessages(
   getBuffer: () => DocumentClassificationEvent [],
