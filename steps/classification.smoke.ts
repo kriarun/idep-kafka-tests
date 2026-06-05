@@ -39,6 +39,16 @@ When('all classification messages are received', async () => {
   );
 });
 
+
+When('all classification messages are received within {int}ms', async (timeoutMs: number) => {
+  context.receivedMessages = await waitForMessages(
+    getMessageBuffer,
+    context.shareId,
+    context.expectedClassifications.length,
+    timeoutMs
+  );
+});
+
 Then(
   'the classifications should contain {string}',
   async (classificationsString: string) => {

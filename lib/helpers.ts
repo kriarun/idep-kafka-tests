@@ -4,19 +4,26 @@ import { config } from '../config';
 import { resolveDocumentClassId } from './types/document-classification-mapping';
 
 export async function waitForMessages(
-  getBuffer: () => DocumentClassificationEvent [],
+  getBuffer: () => DocumentClassificationEvent[],
   shareId: string,
-  expectedCount: number
-): Promise<DocumentClassificationEvent []> {
+  expectedCount: number,
+  timeoutMs?: number
+): Promise<DocumentClassificationEvent[]> {
+  const effectiveTimeout = timeoutMs ?? config.test.maxWaitForMessageMs;
+  
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       clearInterval(interval);
+      const matchingCount = getBuffer().filter(
+        m => m.correlationId === shareId
+      ).length;
+      const totalBufferCount = getBuffer().length;
       reject(
         new Error(
-          `Timeout waiting for messages. Expected: ${expectedCount}, Received: ${getBuffer().filter(m => m.correlationId === shareId).length} for shareId: ${shareId}`
+          `Timeout waiting for messages. Expected: ${expectedCount}, Received: ${matchingCount} for shareId: ${shareId}. Total messages in buffer: ${totalBufferCount}`
         )
       );
-    }, config.test.maxWaitForMessageMs);
+    }, effectiveTimeout);
 
     const interval = setInterval(() => {
       const received = getBuffer().filter(
@@ -30,7 +37,6 @@ export async function waitForMessages(
     }, 500);
   });
 }
-
 
 
 export function resolveDocumentClassIds(
