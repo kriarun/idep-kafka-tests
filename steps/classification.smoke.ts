@@ -39,15 +39,20 @@ When('all classification messages are received', async () => {
   );
 });
 
+//When all classification messages are received within 1200 seconds
 
-When('all classification messages are received within {int}ms', async (timeoutMs: number) => {
-  context.receivedMessages = await waitForMessages(
-    getMessageBuffer,
-    context.shareId,
-    context.expectedClassifications.length,
-    timeoutMs
-  );
-});
+
+When('all classification messages are received within {int} seconds', 
+  { timeout: 1200 * 1000 + 60000 },
+  async (seconds: number) => {
+    context.receivedMessages = await waitForMessages(
+      getMessageBuffer,
+      context.shareId,
+      context.expectedClassifications.length,
+      seconds * 1000  // convert to ms
+    );
+  }
+);
 
 Then(
   'the classifications should contain {string}',
