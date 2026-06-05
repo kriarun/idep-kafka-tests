@@ -49,11 +49,13 @@ Then(
       m => m.documentClass
     );
 
-    expectedIds.forEach(expectedId => {
-      assert.ok(
-        receivedIds.includes(expectedId),
-        `Expected classification ${expectedId} not found. Received: ${receivedIds.join(', ')}`
-      );
-    });
+    const sortedExpected = [...expectedIds].sort();
+    const sortedReceived = [...receivedIds].sort();
+
+    assert.deepStrictEqual(
+      sortedReceived,
+      sortedExpected,
+      `Classifications mismatch. Expected: ${sortedExpected.join(', ')} Received: ${sortedReceived.join(', ')}`
+    );
   }
 );
