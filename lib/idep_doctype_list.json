@@ -1,0 +1,14 @@
+{
+  "data": [
+    {
+      "docTypeNumber": "8888",
+      "docTypeName": "Reisepass",
+      "description": ""
+    },
+    {
+      "docTypeNumber": "9999",
+      "docTypeName": "Lohnausweis",
+      "description": ""
+    }
+  ]
+}

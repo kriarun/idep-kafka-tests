@@ -1,13 +1,13 @@
-import documentClasses from '../document-classification-mapping.json';
-
-type DocumentClasses = typeof documentClasses;
+import idepDoctypeList from '../idep_doctype_list.json';
 
 export function resolveDocumentClassId(key: string): string {
-  const entry = documentClasses[key as keyof DocumentClasses];
+  const entry = idepDoctypeList.data.find(
+    d => d.docTypeName === key
+  );
   if (!entry) {
     throw new Error(
-      `Unknown document class: "${key}". Check lib/document-classification-mapping.json for valid values.`
+      `Unknown document type: "${key}". Check lib/idep_doctype_list.json for valid values.`
     );
   }
-  return entry.id;
+  return entry.docTypeNumber;
 }

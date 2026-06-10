@@ -177,17 +177,23 @@ Tests run sequentially — one scenario at a time. Deliberate decision:
 
 | ID | Decision | Status | Rationale |
 |---|---|---|---|
+| AD-00 | Migrate from C#/.NET to TypeScript/Cucumber-JS on [Platform] standard | Decided | Platform provides ready to use setup — Cucumber-JS, Xray/Jira integration and bank standard tooling out of the box 
 | AD-01 | SSH file copy over direct Kafka publish | Decided | Tests real pipeline — bypassing would give false confidence |
 | AD-02 | `fromBeginning: false` on Kafka consumer | Decided | Prevents consuming stale messages from previous runs |
 | AD-03 | Expected count + timeout for completion detection | Decided | No completion signal in payload — count derived from test data |
 | AD-05 | JSON for regression, inline for smoke | Decided | 60+ rows in Scenario Outline is unreadable — JSON keeps feature files clean |
 | AD-06 | Human-readable filenames | Identified | UUID filenames make debugging harder — not yet raised with team |
 | AD-08 | Core submodule excluded | Decided | Core is browser-coupled — no UI layer in IDEP |
-| AD-09 | `document-classification-mapping.json` in `lib/` | Decided | Classification IDs are a system contract — change controlled via MR |
+| AD-09 | `idep_doctype_list.json` in `lib/` | Decided | Document type list is a system contract — change controlled via MR, not throwaway test data |
+
 | AD-10 | `Date.now()` group ID per run | Decided | Fresh consumer group per run — no stale offset history |
 | AD-11 | Sequential test execution | Decided | Predictable, traceable, auditable |
 | AD-12 | `BROWSER=test_execution` in pipeline | Decided | Xray library requires BROWSER variable — neutral value resolves correct execution config file |
 | AD-13 | Pipeline defined in IDEP repo | Decided | Framework pipeline is browser-coupled — IDEP needs full control |
+| AD-14 | No need for faramework repo | Decided | Framework is browser-coupled — Keep it simple |
+| AD-15 | `idep_doctype_list.json` copied manually from source — not synced on the fly | Decided | On-the-fly sync risks silent test failures — manual copy via MR ensures changes are reviewed and test impact assessed |
+| AD-16 | Future: automate `idep_doctype_list.json` update via pipeline triggered MR | Planned | Reduces manual effort while keeping change control — MR still requires review before merge |
+
 
 ---
 
