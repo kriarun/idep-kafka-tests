@@ -26,7 +26,8 @@ export async function copyFileToRemote(shareId: string): Promise<void> {
    try {
     await sftp.end();
   } catch {
-    // ignore close errors — file transfer already completed
+    // suppress ECONNRESET on close — server closes connection abruptly after transfer
+    // file transfer already completed successfully at this point
   }
   }
 }
