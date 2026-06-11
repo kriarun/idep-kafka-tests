@@ -23,6 +23,10 @@ export async function copyFileToRemote(shareId: string): Promise<void> {
     console.log(`${shareId}.pdf copied successfully`);
 
   } finally {
+   try {
     await sftp.end();
+  } catch {
+    // ignore close errors — file transfer already completed
+  }
   }
 }
