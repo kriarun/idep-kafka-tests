@@ -5,6 +5,7 @@ import { DocumentClassificationScenarioState  } from '../lib/types/document-clas
 import { config } from '../config';
 import assert from 'assert';
 import { getMessageBuffer } from '../lib/kafka.client';
+import { copyFileToRemote } from "../lib/file-transfer.client"
 
 let context: DocumentClassificationScenarioState ;
 
@@ -28,6 +29,7 @@ Given(
     for (const documentClass of expectedIds) {
       await publishStubMessage(getProducer(), shareId, documentClass);
     }
+    await copyFileToRemote(shareId);
   }
 );
 

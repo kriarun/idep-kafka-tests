@@ -6,6 +6,13 @@ export const config = {
     username: process.env.KAFKA_USERNAME ?? '',
     password: process.env.KAFKA_PASSWORD ?? '',
   },
+  fileTransfer: {
+  host: process.env.FILE_TRANSFER_HOST ?? '',
+  port: parseInt(process.env.FILE_TRANSFER_PORT ?? '22'),
+  username: process.env.FILE_TRANSFER_USERNAME ?? '',
+  password: process.env.FILE_TRANSFER_PASSWORD ?? '',
+  remoteFolderPath: process.env.FILE_TRANSFER_REMOTE_FOLDER_PATH ?? ''
+},
   test: {
     maxWaitForMessageMs: parseInt(process.env.MAX_WAIT_FOR_MESSAGE_MS ?? '30000'),
   }
