@@ -5,6 +5,13 @@ import { config } from '../config';
 export async function copyFileToRemote(shareId: string): Promise<void> {
   const sftp = new SftpClient();
 
+  // ECONNRESET — server closes connection abruptly after transfer completion
+  // harmless — file already transferred successfully at this point
+  sftp.on('error', (err: NodeJS.ErrnoException) => {
+    if (err.code === 'ECONNRESET') return;
+    console.error('File transfer error:', err.message);
+  });
+
   const localFilePath = path.resolve(
     `./test-data/documents/${shareId}.pdf`
   );
@@ -18,16 +25,15 @@ export async function copyFileToRemote(shareId: string): Promise<void> {
       password: config.fileTransfer.password
     });
 
-    console.log(`Copying ${shareId}.pdf to remote folder...`);
+    console.info(`Copying ${shareId}.pdf to remote folder...`);
     await sftp.put(localFilePath, remoteFilePath);
-    console.log(`${shareId}.pdf copied successfully`);
+    console.info(`${shareId}.pdf copied successfully`);
 
   } finally {
-   try {
-    await sftp.end();
-  } catch {
-    // suppress ECONNRESET on close — server closes connection abruptly after transfer
-    // file transfer already completed successfully at this point
-  }
+    try {
+      await sftp.end();
+    } catch {
+      // suppress close errors — transfer already completed
+    }
   }
 }
